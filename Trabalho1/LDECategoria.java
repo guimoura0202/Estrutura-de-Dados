@@ -23,57 +23,80 @@ public class LDECategoria implements ILDECategoria {
             this.ultimo = novoNoh;
         }
     }
+    //Crie metodos que adicionem no inicio e no fim
+    public void adicionaCategoriaInicio(NohCategoria novoNoh) {
+        if (this.primeiro == null) {
+            this.primeiro = novoNoh;
+            this.ultimo = novoNoh;
+        } else {
+            novoNoh.setProx(this.primeiro);
+            this.primeiro.setAnt(novoNoh);
+            this.primeiro = novoNoh;
+        }
+    }
+    public void adicionaCategoriaFim(NohCategoria novoNoh){
+        if (this.primeiro == null) {
+            this.primeiro = novoNoh;
+            this.ultimo = novoNoh;
+        } else {
+            this.ultimo.setProx(novoNoh);
+            novoNoh.setAnt(this.ultimo);
+            this.ultimo = novoNoh;
+        }
+    }
 
     @Override
     public void imprimirNohCategoria() {
         NohCategoria atual = this.primeiro;
         while (atual != null) {
-            System.out.println("codCategoria: " + atual.codCategoria);
-            System.out.println("categoria: " + atual.categoria + " \n");
+            System.out.println("codCategoria: " + atual.getCodCategoria());
+            System.out.println("categoria: " + atual.getCategoria() + " \n");
             atual = atual.getProx();
-
         }
     }
 
-    @Override
     public void lerCsv() {
-
-        String caminho = "Categorias.csv";
-        try {
-            FileReader arquivo = new FileReader(caminho);
-            BufferedReader lerArquivo = new BufferedReader(arquivo);
-            String linha = lerArquivo.readLine();
-            linha = lerArquivo.readLine();
-            ILDECategoria lista = new LDECategoria();
-            while (linha != null) {
+        String caminho = "Trabalho1/Categorias.csv";
+        try (FileReader arquivo = new FileReader(caminho);
+             BufferedReader lerArquivo = new BufferedReader(arquivo)) {
+    
+            String linha = lerArquivo.readLine(); // Pular cabeçalho se necessário
+            while ((linha = lerArquivo.readLine()) != null) {
                 String[] atributos = linha.split(";");
                 int codCategoria = Integer.parseInt(atributos[0]);
                 String categoria = atributos[1];
                 NohCategoria novoNoh = new NohCategoria(codCategoria, categoria);
-                lista.adicionarNohCategoria(novoNoh);
-                linha = lerArquivo.readLine();
+                this.adicionaCategoriaFim(novoNoh); // Adiciona à lista atual
             }
-            arquivo.close();
-            lista.imprimirNohCategoria();
         } catch (IOException e) {
             System.out.println("Erro ao ler o arquivo: " + e.getMessage());
         }
     }
+    
 
     @Override
     public void listarInicioFimCategoria() {
-        lerCsv();
-        
+        NohCategoria atual = primeiro;
+        if (atual == null) {
+            System.out.println("Nenhuma categoria disponível.");
+        } else {
+            while (atual != null) {
+                System.out.println("Código: " + atual.getCodCategoria() + ", Categoria: " + atual.getNomeCategoria());
+                atual = atual.getProx();
+            }
+        }
     }
-
     @Override
     public void listarFimInicioCategoria() {
-        NohCategoria atual = this.ultimo;
-        while (atual != null) {
-            System.out.println("Categoria: " + atual.categoria + ", Código Categoria: " + atual.codCategoria);
-            atual = atual.getAnt();
+        NohCategoria atual = ultimo;
+        if (atual == null) {
+            System.out.println("Nenhuma categoria disponível.");
+        } else {
+            while (atual != null) {
+                System.out.println("Código: " + atual.getCodCategoria() + ", Categoria: " + atual.getNomeCategoria());
+                atual = atual.getAnt();
+            }
         }
-
     }
 
     @Override
@@ -88,31 +111,36 @@ public class LDECategoria implements ILDECategoria {
         }
 
     }
-
-    @Override
     public void excluirCategoria(int codCategoria) {
         NohCategoria atual = this.primeiro;
         while (atual != null) {
-            if (atual.getCodCategoria() == (codCategoria)) {
+            if (atual.getCodCategoria() == codCategoria) {
                 if (atual == primeiro) {
                     primeiro = atual.getProx();
                     if (primeiro != null) {
                         primeiro.setAnt(null);
                     } else {
-                        ultimo = null;
+                        ultimo = null;  // Se não houver mais nenhum nó, atualiza o último também.
                     }
                 } else if (atual == ultimo) {
                     ultimo = atual.getAnt();
-                    ultimo.setProx(null);
+                    if (ultimo != null) {
+                        ultimo.setProx(null);
+                    } else {
+                        primeiro = null;  // Se não houver mais nenhum nó, atualiza o primeiro também.
+                    }
                 } else {
                     atual.getAnt().setProx(atual.getProx());
-                    atual.getProx().setAnt(atual.getAnt());
+                    if (atual.getProx() != null) {
+                        atual.getProx().setAnt(atual.getAnt());
+                    }
                 }
                 break;
             }
             atual = atual.getProx();
         }
     }
+    
     public NohCategoria buscaCategoria(int codCategoria) {
         NohCategoria atual = this.primeiro;
         while (atual != null) {

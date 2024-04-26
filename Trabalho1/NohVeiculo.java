@@ -11,6 +11,15 @@ public class NohVeiculo {
     private NohVeiculo proximo;
     private NohVeiculo ant;
     private NohVeiculo info;
+    private boolean disponivel;
+
+    public boolean isDisponivel() {
+        return disponivel;
+    }
+
+    public void setDisponivel(boolean disponivel) {
+        this.disponivel = disponivel;
+    }
 
     public NohVeiculo(String placa, String modelo, String marca, int ano, double potencia, int nLugares, int categoria) {
         this.placa = placa;
@@ -20,6 +29,7 @@ public class NohVeiculo {
         this.potencia = potencia;
         this.nLugares = nLugares;
         this.categoria = categoria;
+        this.disponivel = false;
     }
 
     public void setProx(NohVeiculo n) { this.proximo = n; }

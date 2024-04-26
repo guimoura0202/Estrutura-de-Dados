@@ -3,9 +3,10 @@ package Trabalho1;
 import java.util.Scanner;
 
 public class MenuVeiculo {
-    MenuVeiculo(){}
+    private final Scanner scanner = new Scanner(System.in);
+    MenuVeiculo(){
+    }
     public void listarMenu(LDEVeiculo listaVeiculos) {
-        Scanner scanner = new Scanner(System.in);
         int opcao;
 
         while (true) {
@@ -42,8 +43,7 @@ public class MenuVeiculo {
                     break;
                 case 7:
                     System.out.println("Saindo...");
-                    scanner.close();
-                    return;
+                    return; // Remove scanner.close() para evitar fechar System.in
                 default:
                     System.out.println("Opção inválida!");
             }
@@ -51,7 +51,6 @@ public class MenuVeiculo {
     }
 
     private void adicionarVeiculo(boolean noInicio, LDEVeiculo listaVeiculos) {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Informe os dados do veículo:");
         System.out.print("Placa: ");
         String placa = scanner.nextLine();
@@ -78,7 +77,6 @@ public class MenuVeiculo {
     }
 
     private void editarVeiculo(LDEVeiculo listaVeiculos) {
-        Scanner scanner = new Scanner(System.in);
         System.out.print("Digite a placa do veículo a ser editado: ");
         String placa = scanner.nextLine();
         NohVeiculo veiculo = listaVeiculos.buscarVeiculoPorPlaca(placa);
@@ -120,11 +118,9 @@ public class MenuVeiculo {
     }
 
     private void excluirVeiculo(LDEVeiculo listaVeiculos) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("Digite a placa do veículo a ser excluído:");
-            String placa = scanner.nextLine();
-            listaVeiculos.excluirVeiculo(placa);
-        }
-        listaVeiculos.imprimirNohVeiculo();
+        System.out.print("Digite a placa do veículo a ser excluído: ");
+        String placa = scanner.nextLine();  // Espera uma string, não um int
+        listaVeiculos.excluirVeiculo(placa);
     }
+    
 }

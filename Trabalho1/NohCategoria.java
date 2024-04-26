@@ -1,31 +1,19 @@
 package Trabalho1;
 
 public class NohCategoria {
-    protected int codCategoria;
-    protected String categoria;
-    private NohCategoria proximo;
-    private NohCategoria ant;
-    private NohCategoria info;
+    private int codCategoria;
+    private String categoria;
+    private NohCategoria proximo;  // Conforme usado em LDECategoria
+    private NohCategoria anterior;  // Conforme usado em LDECategoria
 
     public NohCategoria(int codCategoria, String categoria) {
         this.codCategoria = codCategoria;
         this.categoria = categoria;
+        this.proximo = null;
+        this.anterior = null;
     }
 
-    public void setProx(NohCategoria n) { this.proximo = n; }
-
-    public void setAnt(NohCategoria n) { this.ant = n; }
-    
-    public NohCategoria getInfo() {
-        return this.info;
-    }
-    public NohCategoria getProx() {
-        return this.proximo;
-    }
-    public NohCategoria getAnt() {
-        return this.ant;
-    }
-
+    // Getters e setters para o código da categoria e nome
     public int getCodCategoria() {
         return codCategoria;
     }
@@ -42,6 +30,23 @@ public class NohCategoria {
         this.categoria = categoria;
     }
 
-    
+    // Getters e setters para os nós próximo e anterior
+    public NohCategoria getProx() {
+        return proximo;
+    }
 
+    public void setProx(NohCategoria proximo) {
+        this.proximo = proximo;
+    }
+
+    public NohCategoria getAnt() {
+        return anterior;
+    }
+
+    public void setAnt(NohCategoria anterior) {
+        this.anterior = anterior;
+    }
+    public String getNomeCategoria() {
+        return categoria;
+    }
 }

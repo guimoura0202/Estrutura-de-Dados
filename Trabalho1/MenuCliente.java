@@ -1,10 +1,13 @@
 package Trabalho1;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
+
 public class MenuCliente {
-    private Scanner scanner = new Scanner(System.in);
-    MenuCliente (){}
+    private final Scanner scanner = new Scanner(System.in);
+
+
     public void listarMenu(LDECliente listaClientes) {
         boolean continuar = true;
         while (continuar) {
@@ -41,20 +44,26 @@ public class MenuCliente {
     }
 
     private void adicionarCliente(LDECliente listaClientes) {
-        System.out.print("Digite o nome do cliente: ");
-        String nome = scanner.nextLine();
-        System.out.print("Digite o CNH do cliente: ");
-        long cnh = scanner.nextLong();
-        System.out.print("Digite o telefone do cliente: ");
-        long telefone = scanner.nextLong();
-        System.out.print("Digite o CPF do cliente: ");
-        long cpf = scanner.nextLong();
-        scanner.nextLine(); // Consumir a quebra de linha
+        try {
+            System.out.print("Digite o nome do cliente: ");
+            String nome = scanner.nextLine();
+            System.out.print("Digite o CNH do cliente: ");
+            long cnh = scanner.nextLong();
+            System.out.print("Digite o telefone do cliente: ");
+            long telefone = scanner.nextLong();
+            System.out.print("Digite o CPF do cliente: ");
+            long cpf = scanner.nextLong();
+            scanner.nextLine(); // Consumir a quebra de linha
 
-        NohCliente novoCliente = new NohCliente(nome, cnh, telefone, cpf);
-        listaClientes.adicionarNoClienteF(novoCliente);
-        System.out.println("Cliente adicionado com sucesso!");
+            NohCliente novoCliente = new NohCliente(nome, cnh, telefone, cpf);
+            listaClientes.adicionarOrdenadoCrescente(novoCliente);
+            System.out.println("Cliente adicionado com sucesso!");
+        } catch (InputMismatchException e) {
+            System.out.println("Entrada inválida. Certifique-se de digitar números onde são esperados.");
+            scanner.nextLine(); // descarta a entrada incorreta para evitar loops infinitos
+        }
     }
+
 
     private void editarCliente(LDECliente listaClientes) {
         System.out.print("Digite o CPF do cliente para editar: ");
@@ -77,7 +86,23 @@ public class MenuCliente {
     }
 
     private void listarClientes(LDECliente listaClientes) {
-        listaClientes.listarCliente();
+        System.out.println("Escolha o modo de listagem:");
+        System.out.println("1. Ordem Crescente");
+        System.out.println("2. Ordem Decrescente");
+        System.out.print("Opção: ");
+        int opcao = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (opcao) {
+            case 1:
+                listaClientes.listarInicioFim();
+                break;
+            case 2:
+                listaClientes.listarFimInicio();
+                break;
+            default:
+                System.out.println("Opção inválida. Retornando ao menu principal.");
+        }
     }
 
     private void excluirCliente(LDECliente listaClientes) {
@@ -87,6 +112,4 @@ public class MenuCliente {
         listaClientes.excluirCliente(cpf);
         System.out.println("Cliente excluído com sucesso!");
     }
-
-    
 }

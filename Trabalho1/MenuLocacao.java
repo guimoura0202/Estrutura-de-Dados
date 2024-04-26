@@ -2,7 +2,6 @@ package Trabalho1;
 
 import java.util.Scanner;
 
-import Atividade5.LDE;
 
 public class MenuLocacao {
     MenuLocacao(){}
@@ -46,14 +45,22 @@ public class MenuLocacao {
         System.out.println("=== Adicionar Locação ===");
         System.out.print("Digite o CPF do cliente: ");
         Long cpf = scanner.nextLong();
+        scanner.nextLine(); // Consumir a quebra de linha
         System.out.print("Digite a placa do veículo: ");
         String placa = scanner.nextLine();
-
-        try {
-            ldeLocacao.alocarVeiculoCliente(ldeCliente.buscarClientePorCpf(cpf), ldeVeiculo.buscarVeiculoPorPlaca(placa));
-            System.out.println("Locação adicionada com sucesso!");
-        } catch (Exception e) {
-            System.out.println("Não foi possível adicionar a locação: " + e.getMessage());
+        if(ldeCliente.buscarClientePorCpf(cpf) == null){
+            System.out.println("Cliente não encontrado");
+            return;
+        } else if(ldeVeiculo.buscarVeiculoPorPlaca(placa) == null){
+            System.out.println("Veículo não encontrado");
+            return;
+        } else{
+            try {
+                ldeLocacao.alocarVeiculoCliente(ldeCliente.buscarClientePorCpf(cpf), ldeVeiculo.buscarVeiculoPorPlaca(placa), ldeVeiculo);
+                System.out.println("Locação adicionada com sucesso!");
+            } catch (Exception e) {
+                System.out.println("Não foi possível adicionar a locação: " + e.getMessage());
+            }
         }
     }
 

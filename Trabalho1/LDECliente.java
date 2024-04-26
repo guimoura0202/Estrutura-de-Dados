@@ -2,84 +2,83 @@ package Trabalho1;
 
 public class LDECliente implements ILDECliente {
     private NohCliente primeiro;
-    public NohCliente getPrimeiro() {
-        return primeiro;
-    }
-
-    public void setPrimeiro(NohCliente primeiro) {
-        this.primeiro = primeiro;
-    }
-
     private NohCliente ultimo;
 
-    public LDECliente(NohCliente primeiro, NohCliente ultimo) {
+    public LDECliente() {
         this.primeiro = null;
         this.ultimo = null;
     }
 
-    @Override
-    public void adicionarNoCliente(NohCliente novoNoh) {
-        if (this.primeiro == null) {
-            this.primeiro = novoNoh;
-            this.ultimo = novoNoh;
+    // Adiciona um cliente de forma ordenada (crescente) por CPF
+    public void adicionarOrdenadoCrescente(NohCliente novoNoh) {
+        if (primeiro == null || novoNoh.getCpf().compareTo(primeiro.getCpf()) < 0) {
+            novoNoh.setProx(primeiro);
+            if (primeiro != null) {
+                primeiro.setAnt(novoNoh);
+            }
+            primeiro = novoNoh;
+            if (ultimo == null) {
+                ultimo = novoNoh;
+            }
         } else {
-            this.ultimo.setProx(novoNoh);
-            this.ultimo = novoNoh;
+            NohCliente atual = primeiro;
+            while (atual.getProx() != null && atual.getProx().getCpf().compareTo(novoNoh.getCpf()) < 0) {
+                atual = atual.getProx();
+            }
+            novoNoh.setProx(atual.getProx());
+            novoNoh.setAnt(atual);
+            if (atual.getProx() != null) {
+                atual.getProx().setAnt(novoNoh);
+            } else {
+                ultimo = novoNoh;
+            }
+            atual.setProx(novoNoh);
         }
     }
 
     @Override
-    public void adicionarNoClienteF(NohCliente novoNoh) {
-        if (this.ultimo == null) {
-            this.primeiro = novoNoh;
-            this.ultimo = novoNoh;
+    public void listarInicioFim() {
+        NohCliente atual = primeiro;  // Começa pelo primeiro nó
+        if (atual == null) {
+            System.out.println("A lista de clientes está vazia.");
         } else {
-            this.ultimo.setAnt(novoNoh);
-            this.ultimo = novoNoh;
+            while (atual != null) {
+                System.out.println("Cliente: " + atual.getNome() + ", CPF: " + atual.getCpf());
+                atual = atual.getProx();  // Move para o próximo nó
+            }
         }
     }
-
     @Override
-    public void exibirClientes() {
-        NohCliente atual = this.primeiro;
-        while (atual != null) {
-            System.out.println("Nome: " + atual.nome + ", CNH: " + atual.cnh + ", Telefone: " + atual.telefone
-                    + ", CPF: " + atual.cpf);
-            atual = atual.getProx();
+    public void listarFimInicio() {
+        NohCliente atual = ultimo;  // Começa pelo último nó
+        if (atual == null) {
+            System.out.println("A lista de clientes está vazia.");
+        } else {
+            while (atual != null) {
+                System.out.println("Cliente: " + atual.getNome() + ", CPF: " + atual.getCpf());
+                atual = atual.getAnt();  // Move para o nó anterior
+            }
         }
     }
-
-    @Override
-    public void listarCliente() {
-        NohCliente atual = this.ultimo;
-        while (atual != null) {
-            System.out.println("Nome: " + atual.nome + ", CNH: " + atual.cnh + ", Telefone: " + atual.telefone
-                    + ", CPF: " + atual.cpf);
-            atual = atual.getAnt();
-        }
-
-    }
-
     @Override
     public void editarCliente(Long cpf) {
-        NohCliente atual = this.primeiro;
+        NohCliente atual = primeiro;
         while (atual != null) {
-            if (atual.getCpf()==(cpf)) {
-                atual.setNome(null);
+            if (atual.getCpf().equals(cpf)) {
+                atual.setNome(null);  
                 atual.setCnh(Long.valueOf(0));
                 atual.setTelefone(Long.valueOf(0));
                 break;
             }
             atual = atual.getProx();
         }
-
     }
 
     @Override
     public void excluirCliente(Long cpf) {
-        NohCliente atual = this.primeiro;
+        NohCliente atual = primeiro;
         while (atual != null) {
-            if (atual.getCpf()==(cpf)) {
+            if (atual.getCpf().equals(cpf)) {
                 if (atual == primeiro) {
                     primeiro = atual.getProx();
                     if (primeiro != null) {
@@ -89,28 +88,31 @@ public class LDECliente implements ILDECliente {
                     }
                 } else if (atual == ultimo) {
                     ultimo = atual.getAnt();
-                    ultimo.setProx(null);
+                    if (ultimo != null) {
+                        ultimo.setProx(null);
+                    } else {
+                        primeiro = null;
+                    }
                 } else {
                     atual.getAnt().setProx(atual.getProx());
-                    atual.getProx().setAnt(atual.getAnt());
+                    if (atual.getProx() != null) {
+                        atual.getProx().setAnt(atual.getAnt());
+                    }
                 }
                 break;
             }
             atual = atual.getProx();
         }
     }
-    // método buscarCliente
+
     public NohCliente buscarClientePorCpf(Long cpf) {
         NohCliente atual = primeiro;
-    
         while (atual != null) {
             if (atual.getCpf().equals(cpf)) {
                 return atual;
             }
             atual = atual.getProx();
         }
-    
         return null;
     }
 }
-

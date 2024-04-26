@@ -3,17 +3,34 @@ package Trabalho1;
 import java.util.Scanner;
 
 public class Menu {
-    private Scanner scanner = new Scanner(System.in);
-    private LDECliente listaClientes = new LDECliente(null, null);
-    private LDECategoria listaCategorias = new LDECategoria();
-    private LDEVeiculo listaVeiculos = new LDEVeiculo();
-    private LDELocacao listaLocacoes = new LDELocacao(null, null);
-    MenuCategoria menuCategoria = new MenuCategoria();
-    MenuCliente menuCliente = new MenuCliente();
-    MenuVeiculo menuVeiculo = new MenuVeiculo();
-    MenuLocacao menuLocacao = new MenuLocacao();
-    public void exibirMenu() {
+    private Scanner scanner;
+    private LDECliente listaClientes;
+    private LDECategoria listaCategorias;
+    private LDEVeiculo listaVeiculos;
+    private LDELocacao listaLocacoes;
+    private MenuCategoria menuCategoria;
+    private MenuCliente menuCliente;
+    private MenuVeiculo menuVeiculo;
+    private MenuLocacao menuLocacao;
 
+    public Menu() {
+        this.scanner = new Scanner(System.in);
+        this.listaClientes = new LDECliente();
+        this.listaCategorias = new LDECategoria();
+        this.listaVeiculos = new LDEVeiculo();
+        this.listaLocacoes = new LDELocacao(null, null);
+        this.menuCategoria = new MenuCategoria();
+        this.menuCliente = new MenuCliente();
+        this.menuVeiculo = new MenuVeiculo();
+        this.menuLocacao = new MenuLocacao();
+    }
+
+    public void carregarDadosIniciais() {
+        listaCategorias.lerCsv();
+        listaVeiculos.lerCsv();
+    }
+
+    public void exibirMenu() {
         boolean executando = true;
         while (executando) {
             System.out.println("\n--- Menu Principal ---");
@@ -25,10 +42,10 @@ public class Menu {
             System.out.print("Escolha uma opção: ");
             int opcao = scanner.nextInt();
             scanner.nextLine(); // Consumir a quebra de linha
-
+    
             switch (opcao) {
                 case 1:
-                    menuCategoria.listarMenu(listaCategorias);
+                    menuCliente.listarMenu(listaClientes);
                     break;
                 case 2:
                     menuVeiculo.listarMenu(listaVeiculos);
@@ -47,11 +64,11 @@ public class Menu {
                     System.out.println("Opção inválida!");
             }
         }
-        scanner.close();
     }
 
     public static void main(String[] args) {
         Menu menu = new Menu();
+        menu.carregarDadosIniciais();
         menu.exibirMenu();
     }
 }

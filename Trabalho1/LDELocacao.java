@@ -10,7 +10,7 @@ public class LDELocacao implements ILDELocacao {
     }
 
     private LDELocacao(NohCliente cliente, NohVeiculo veiculo) {
-        
+
     }
 
     @Override
@@ -52,11 +52,20 @@ public class LDELocacao implements ILDELocacao {
     }
 
     @Override
-    public void alocarVeiculoCliente(NohCliente cliente, NohVeiculo veiculo) {
-        LDELocacao locacao = new LDELocacao(cliente, veiculo);
-        NohLocacao novoNoh = new NohLocacao(locacao);
-        adicionarNoLocacao(novoNoh);
-        System.out.println("Veículo alocado com sucesso para o cliente " + cliente.getNome() + "!");
+    public void alocarVeiculoCliente(NohCliente cliente, NohVeiculo veiculo, LDEVeiculo ldeVeiculo) {
+        if(cliente == null || veiculo == null) {
+            throw new NullPointerException("Cliente ou veículo não podem ser nulos.");
+        }else if(cliente.getNome().equals("") || veiculo.getPlaca().equals("")){
+            throw new IllegalArgumentException("Cliente ou veículo não podem ser vazios.");
+        } else if(ldeVeiculo.isAlocado(veiculo.getPlaca())){
+            System.out.println("Veículo já alocado para outro cliente.");
+        }else{
+            LDELocacao locacao = new LDELocacao(cliente, veiculo);
+            NohLocacao novoNoh = new NohLocacao(locacao);
+            adicionarNoLocacao(novoNoh);
+            System.out.println("Veículo alocado com sucesso para o cliente " + cliente.getNome() + "!");
+
+        }
     }
 
     @Override

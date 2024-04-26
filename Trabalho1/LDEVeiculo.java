@@ -26,29 +26,28 @@ public class LDEVeiculo implements ILDEVeiculo {
 
     @Override
     public void adicionarVeiculoInicio(NohVeiculo novoNoh) {
-
         if (this.primeiro == null) {
             this.primeiro = novoNoh;
             this.ultimo = novoNoh;
         } else {
-            novoNoh = this.primeiro;
-            this.primeiro = novoNoh;
+            novoNoh.setProx(this.primeiro);
+            this.primeiro.setAnt(novoNoh);
             this.primeiro = novoNoh;
         }
     }
 
     @Override
     public void adicionarVeiculoFim(NohVeiculo novoNoh) {
-
         if (this.primeiro == null) {
             this.primeiro = novoNoh;
             this.ultimo = novoNoh;
         } else {
-            novoNoh = this.ultimo;
-            this.ultimo = novoNoh;
+            this.ultimo.setProx(novoNoh);
+            novoNoh.setAnt(this.ultimo);
             this.ultimo = novoNoh;
         }
-    }
+    }    
+
 
     public NohVeiculo buscarVeiculoPorPlaca(String placa) {
         NohVeiculo atual = primeiro;
@@ -79,17 +78,11 @@ public class LDEVeiculo implements ILDEVeiculo {
         }
     }
 
-    @Override
     public void lerCsv() {
-
-        String caminho = "/home/guilhermedevilademoura/Área de Trabalho/Estrutura-de-Dados/Trabalho1/Veiculos.csv";
-        try {
-            FileReader arquivo = new FileReader(caminho);
-            BufferedReader lerArquivo = new BufferedReader(arquivo);
-            String linha = lerArquivo.readLine();
-            linha = lerArquivo.readLine();
-            ILDEVeiculo lista = new LDEVeiculo();
-            while (linha != null) {
+        String caminho = "Trabalho1/Veiculos.csv";
+        try (BufferedReader lerArquivo = new BufferedReader(new FileReader(caminho))) {
+            String linha = lerArquivo.readLine(); // Pular cabeçalho se necessário
+            while ((linha = lerArquivo.readLine()) != null) {
                 String[] atributos = linha.split(";");
                 String placa = atributos[0];
                 String modelo = atributos[1];
@@ -99,35 +92,32 @@ public class LDEVeiculo implements ILDEVeiculo {
                 int nLugares = Integer.parseInt(atributos[5]);
                 int categoria = Integer.parseInt(atributos[6]);
                 NohVeiculo novoNoh = new NohVeiculo(placa, modelo, marca, ano, potencia, nLugares, categoria);
-                lista.adicionarNohVeiculo(novoNoh);
-                linha = lerArquivo.readLine();
+                adicionarVeiculoFim(novoNoh); // Adiciona à lista atual
             }
-            arquivo.close();
-            lista.imprimirNohVeiculo();
         } catch (IOException e) {
             System.out.println("Erro ao ler o arquivo: " + e.getMessage());
         }
     }
     
-    @Override
-    public void editarVeiculo(String placa) {
-        lerCsv();
-        NohVeiculo atual = this.primeiro;
-        while (atual != null) {
-            if (atual.getPlaca() == (placa)) {
-                atual.setModelo(null);
-                atual.setMarca(null);
-                atual.setAno(0);
-                atual.setPotencia(0);
-                atual.setnLugares(0);
-                break;
-            }
-            atual = atual.getProx();
+    public void editarVeiculo(String placa, String novoModelo, String novaMarca, int novoAno, double novaPotencia, int novosLugares) {
+        NohVeiculo atual = buscarVeiculoPorPlaca(placa);
+        if (atual != null) {
+            if (novoModelo != null) atual.setModelo(novoModelo);
+            if (novaMarca != null) atual.setMarca(novaMarca);
+            if (novoAno > 0) atual.setAno(novoAno);
+            if (novaPotencia > 0) atual.setPotencia(novaPotencia);
+            if (novosLugares > 0) atual.setnLugares(novosLugares);
+            System.out.println("Veículo editado com sucesso.");
+        } else {
+            System.out.println("Veículo não encontrado com a placa: " + placa);
         }
-
-    }
+    }    
 
     public void excluirVeiculo(String placa) {
+        if(isAlocado(placa)){
+            System.out.println("Veículo alocado, não é possível excluir");
+            return;
+        }
         try{
             NohVeiculo atual = this.primeiro;
             while (atual != null) {
@@ -160,7 +150,6 @@ public class LDEVeiculo implements ILDEVeiculo {
 
     @Override
     public void listarInicioFimVeiculo() {
-        lerCsv();
         NohVeiculo atual = this.primeiro;
         while (atual != null) {
             System.out.println("Placa: " + atual.placa + ", Modelo: " + atual.modelo + ", Marca: " + atual.marca
@@ -188,4 +177,19 @@ public class LDEVeiculo implements ILDEVeiculo {
         throw new UnsupportedOperationException("Unimplemented method 'adicionarNohVeiculF'");
     }
 
+    @Override
+    public void editarVeiculo(String placa) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'editarVeiculo'");
+    }
+    public boolean isAlocado (String placa){
+        NohVeiculo atual = this.primeiro;
+        while (atual != null) {
+            if (atual.getPlaca().equals(placa)) {
+                return atual.isDisponivel();
+            }
+            atual = atual.getProx();
+        }
+        return false;
+    }
 }
