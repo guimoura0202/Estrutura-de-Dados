@@ -1,3 +1,4 @@
+package Atividade6;
 
 import java.util.Random;
 
